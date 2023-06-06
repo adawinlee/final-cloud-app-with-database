@@ -107,7 +107,7 @@ class Question(models.Model):
     # question text
     content = models.TextField()
     # question grade/mark
-    grade = models.IntegerField()
+    grade = models.IntegerField(default=0)
     # one-to-many relationship with course
     course = models.ForeignKey(Course, null=True, on_delete=models.CASCADE)
 
