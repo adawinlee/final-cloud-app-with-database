@@ -126,7 +126,12 @@ def submit(request, course_id):
         return submitted_answers
 
     # Add each selected choice object to the submission object
-    submission.choices.set(extract_answers(request))
+    if request == 'POST':
+        answers = extract_answers(request)
+        for a in answers:
+            submission.choices.add(a)
+        submission.save()
+
     # Redirect to show_exam_result with the submission id
     return HttpResponseRedirect(reverse(viewname='onlinecourse:exam_result', args=(course.id, submission.id,)))    
 
@@ -140,8 +145,17 @@ def show_exam_result(request, course_id, submission_id):
 
     # Get the selected choice ids from the submission record
     total_score = 0
-    # For each selected choice, check if it is a correct answer or not
-    for choice in Submission.choices:
+    context['course'] = course
+    context['submission'] = submission
+    '''
+    if request == 'GET':
+        # For each selected choice, check if it is a correct answer or not
+        for choice in submission.choices.all:
+            if choice.correct_choice:
+                # Calculate the total score
+                total_score = choice.question.grade + total_score'''
+                
+    for choice in submission.choices.all:
         if choice.correct_choice:
             # Calculate the total score
             total_score = choice.question.grade + total_score
