@@ -63,7 +63,7 @@
                 <!-- <HINT> Each question will have many choices -->
             
                 <!-- A choice submission form example -->
-                <form id="questionform" action="submit" method="post">
+                <form id="questionform" action="{% url 'onlinecourse:submit' course.id %}" method="post">
                         {% for question in course.question_set.all %}
                             <div class="card mt-1">
                                 <div class="card-header"><h5>{{question.content}}</h5></div>

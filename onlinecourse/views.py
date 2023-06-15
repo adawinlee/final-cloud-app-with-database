@@ -117,6 +117,7 @@ def submit(request, course_id):
     def extract_answers(request):
         submitted_answers = []
         # use request.POST to get payload dictionary
+        #print(request.POST)
         for key in request.POST:
             if key.startswith('choice'):
                 value = request.POST[key]
@@ -125,11 +126,12 @@ def submit(request, course_id):
                 submitted_answers.append(choice_id)
         return submitted_answers
 
+    answers = extract_answers(request)
+
     # Add each selected choice object to the submission object
-    if request == 'POST':
-        answers = extract_answers(request)
-        for a in answers:
-            submission.choices.add(a)
+    answers = extract_answers(request)
+    for a in answers:
+        submission.choices.add(a)
         submission.save()
 
     # Redirect to show_exam_result with the submission id
@@ -147,18 +149,12 @@ def show_exam_result(request, course_id, submission_id):
     total_score = 0
     context['course'] = course
     context['submission'] = submission
-    '''
-    if request == 'GET':
-        # For each selected choice, check if it is a correct answer or not
-        for choice in submission.choices.all:
-            if choice.correct_choice:
-                # Calculate the total score
-                total_score = choice.question.grade + total_score'''
-                
-    for choice in submission.choices.all:
+            
+    for choice in submission.choices.all():
         if choice.correct_choice:
             # Calculate the total score
             total_score = choice.question.grade + total_score
+    context['total_score'] = total_score
 
     # Add the course, selected_ids, and grade to context for rendering HTML page
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
