@@ -56,15 +56,22 @@
                 <div class="card mt-1">
                     <div class="card-header"><h5>{{question.content}}</h5></div>
                     {% csrf_token %}
-                    Score: {{question.is_get_score}}
                     <div class="form-group">
                     {% for choice in question.choice_set.all %}
-                        <!-- add if statements to check if the user selected the correct answer -->
+                    <!-- add if statements to check if the user selected the correct answer -->
+                        {% if choice.correct_choice and choice in submission.choices.all %}
                         <!-- green if the user selected the correct answer -->
+                        <div class="form-check text-success">Correct answer: {{ choice.content }}</div>
+                        {% elif choice.correct_choice %}
                         <!-- yellow if the choice is correct but the user did not choose it -->
-                        <!-- red if the choice is correct and the user did not choose it -->
+                        <div class="form-check text-warning">Not selected: {{ choice.content }}</div>
+                        {% elif choice.correct_choice == False and choice in submission.choices.all %}
+                        <!-- red if the choice is incorrect and the user chose it -->
+                        <div class="form-check text-danger">Incorrect answer: {{ choice.content }}</div>
+                        {% else %}
                         <!-- if the choice is incorrect and the user did not choose it, then it is black -->
                         <div class="form-check">{{ choice.content }}</div>
+                        {% endif %}
                     {% endfor %}
                     </div>
                 </div>
