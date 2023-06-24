@@ -151,13 +151,17 @@ def show_exam_result(request, course_id, submission_id):
 
     for q in course.question_set.all():
         # get all the choices for each question
-        multichoice = []
+        numchoices = len(q.choice_set.all()) # number of choices for current question
+        multichoice = [] # array of the user's selected choices
         for choice in submission.choices.all():
             if choice.question == q:
                 multichoice.append(choice.id)
         # check if all the correct answers were selected
         if q.is_get_score(multichoice): 
-            total_correct += 1
+            # for every incorrect choice selected, subtract a fraction of the points
+            extra = q.extra_choices(multichoice)
+            incorrect = extra * (1/numchoices)
+            total_correct += (1 - incorrect)
     # calculate grade
     grade = int((total_correct / total_questions) * 100)
     context['grade'] = grade

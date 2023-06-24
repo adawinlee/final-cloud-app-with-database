@@ -120,6 +120,10 @@ class Question(models.Model):
         else:
             return False
 
+    def extra_choices(self, selected_ids):
+        selected_correct = self.choice_set.filter(correct_choice=False, id__in=selected_ids).count()
+        return selected_correct
+
 
 #  <HINT> Create a Choice Model with:
     # Used to persist choice content for a question
