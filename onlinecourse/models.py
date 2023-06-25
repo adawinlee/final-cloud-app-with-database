@@ -124,7 +124,6 @@ class Question(models.Model):
         selected_correct = self.choice_set.filter(correct_choice=False, id__in=selected_ids).count()
         return selected_correct
 
-
 #  <HINT> Create a Choice Model with:
     # Used to persist choice content for a question
     # One-To-Many (or Many-To-Many if you want to reuse choices) relationship with Question
